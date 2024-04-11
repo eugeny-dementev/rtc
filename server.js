@@ -41,6 +41,11 @@ io.on('connection', (socket) => {
       socket.emit('joined', room, socket.id);
     }
   });
+
+  socket.on('disconnect', () => {
+    console.log('disconnect:', socket.id, socket);
+    io.sockets.emit('drop-client', socket.id);
+  });
 })
 
 const PORT = 3000;

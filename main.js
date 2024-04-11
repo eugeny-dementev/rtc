@@ -30,7 +30,6 @@ showIp.onclick = () => {
     tag: HTMLVideoElement,
     peer: RTCPeerConnection,
     isStarted: boolean,
-    stream,
   }
 }
 */
@@ -61,6 +60,19 @@ socket.on('join', (room) => {
 socket.on('joined', (room) => {
   console.log('on.joined', 'room joined:', room)
   roomExists = true;
+});
+
+socket.on('drop-client', (from) => {
+  const remote = remotes[from];
+
+  if (!remote) console.log('No remote found for:', from);
+
+  remote.tag.remove();
+  remote.peer.close();
+
+  delete remotes[from];
+
+  console.log('Client disconected:', from);
 });
 
 function writeMessage(message) {
@@ -169,7 +181,7 @@ function findIceCandidate({ from }) {
 function offerTo(from) {
   const peer = getSavedPeer({ from });
   peer.createOffer().then((offer) => {
-    const enrichedOffer = Object.assign({}, { type: 'offer', to: from, from: socket.id }, JSON.parse(JSON.stringify(offer)));
+    const enrichedOffer = Object.assign({}, { type: 'offer', to: from, from: socket.id }, resolveGetter(offer));
     console.log('offer to', from, enrichedOffer);
     setLocalAndSendMessage(from, enrichedOffer);
   })
@@ -178,10 +190,14 @@ function offerTo(from) {
 function answerTo(from) {
   const peer = getSavedPeer({ from });
   peer.createAnswer().then((answer) => {
-    const enrichedAnswer = Object.assign({}, { type: 'answer', to: from, from: socket.id }, JSON.parse(JSON.stringify(answer)));
+    const enrichedAnswer = Object.assign({}, { type: 'answer', to: from, from: socket.id }, resolveGetter(answer));
     console.log('answer to', from, enrichedAnswer);
     setLocalAndSendMessage(from, enrichedAnswer);
   })
+}
+
+function resolveGetter(sessionDescription) {
+  return JSON.parse(JSON.stringify(sessionDescription))
 }
 
 function setLocalAndSendMessage(from, sessionDescription) {
@@ -207,7 +223,6 @@ function addRemoteVideo(from) {
 
     console.log('gotRemoteStream', 'Add new remote vides stream to remotes array');
     remotes[from].tag = video;
-    remotes[from].stream = stream;
     remotes[from].isStarted = true;
 
     console.log('gotRemoteStream', 'append video tag');
