@@ -67,8 +67,8 @@ socket.on('drop-client', (from) => {
 
   if (!remote) console.log('No remote found for:', from);
 
-  remote.tag.remove();
-  remote.peer.close();
+  remote.tag && remote.tag.remove();
+  remote.peer && remote.peer.close();
 
   delete remotes[from];
 
