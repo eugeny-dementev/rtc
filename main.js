@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Open peer.html?room=<room_name>
+ * Open index.html?room=<room_name>
  */
 
 const pcConfig = {

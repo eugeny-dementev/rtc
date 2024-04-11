@@ -18,3 +18,17 @@ video conference demo
 - Enable flag and restart browser
 - Add IP of machine running server. Example http://192.168.0.7:3000
   - Port required
+
+## Implementation
+
+- Most basic
+- Focus on making it work
+- Filtering of socket messages on client side
+- All clients have RTC connection to each other
+  - Meaning total amount of connections is n(n-1)/2
+- External public STUN server `stun:stun.l.google.com:19302`
+- Main learning resource is https://github.com/MartinGer/WebRTC
+  - But resulted implementation is even more basic for multi RTC connections
+- No coordinator or main host
+  - Each new client notifies everyone about
+  - Each old client sends offer to the new one
