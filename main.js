@@ -72,7 +72,7 @@ socket.on('drop-client', (from) => {
 
   delete remotes[from];
 
-  console.log('Client disconected:', from);
+  console.log('Client disconnected:', from);
 });
 
 function writeMessage(message) {
