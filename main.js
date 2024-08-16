@@ -291,3 +291,12 @@ function getRoomName() {
 
   return name;
 }
+
+function shouldEnableIssuesDetector() {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+
+  const shouldDetectIssues = urlParams.get('detect')
+
+  return Boolean(shouldDetectIssues);
+}
