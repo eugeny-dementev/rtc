@@ -5,6 +5,7 @@ video conference demo
 # Usage
 
 - `npm install` or `yarn`
+- `yarn build` to build browser `dist/bundle.js`
 - `node server.js`
   - tested in Node.js@20
 - Open http://localhost:3000/index.html?room=default
