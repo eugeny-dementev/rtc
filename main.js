@@ -40,6 +40,7 @@ const remotes = {};
 let localStream;
 
 const room = getRoomName();
+const shouldDetect = getShouldEnableIssuesDetector();
 const socket = io.connect();
 
 setTimeout(() => {
@@ -294,7 +295,7 @@ function getRoomName() {
   return name;
 }
 
-function shouldEnableIssuesDetector() {
+function getShouldEnableIssuesDetector() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
 
