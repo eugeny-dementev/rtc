@@ -33,3 +33,8 @@ video conference demo
 - No coordinator or main host
   - Each new client notifies everyone about
   - Each old client sends offer to the new one
+
+## WebRTCIssueDetector
+- To activate issue detector need to pass GET parameter `detect=true`
+- For testing make sense to pass it only to first page only
+  - `localhost:3000/?room=someroom&detect=true`
