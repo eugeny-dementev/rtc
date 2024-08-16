@@ -4,6 +4,8 @@
  * Open index.html?room=<room_name>
  */
 
+const WebRTCIssuesDetector = require('webrtc-issue-detector')
+
 const pcConfig = {
   iceServer: [{
     urls: 'stun:stun.l.google.com:19302',
