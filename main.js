@@ -4,7 +4,8 @@
  * Open index.html?room=<room_name>
  */
 
-const WebRTCIssuesDetector = require('webrtc-issue-detector')
+const WebRTCIssueDetectorModule = require('webrtc-issue-detector');
+const WebRTCIssueDetector = WebRTCIssueDetectorModule.default
 
 const pcConfig = {
   iceServer: [{
@@ -39,8 +40,26 @@ const remotes = {};
 
 let localStream;
 
+let issuesDetector = null;
 const room = getRoomName();
 const shouldDetect = getShouldEnableIssuesDetector();
+if (shouldDetect) {
+  issuesDetector = new WebRTCIssueDetector({
+    onIssues: (issues) => issues.map((issue) => {
+      console.log('WID: Issues type:', issue.type); // eg. "network"
+      console.log('WID: Issues reason:', issue.reason); // eg. "outbound-network-throughput"
+      console.log('WID: Stats:', issue.statsSample); // eg. "packetLossPct: 12%, avgJitter: 230, rtt: 150"
+    }),
+    onNetworkScoresUpdated: (scores) => {
+      console.log('WID: Inbound network score', scores.inbound); // eg. 3.7
+      console.log('WID: Outbound network score', scores.outbound); // eg. 4.5
+      console.log('WID: Network stats', scores.statsSamples); // eg. { inboundStatsSample: { avgJitter: 0.1, rtt: 30, packetsLoss: 8 }, ... }
+    }
+  });
+
+  // start collecting getStats() and detecting issues
+  issuesDetector.watchNewPeerConnections();
+}
 const socket = io.connect();
 
 setTimeout(() => {
