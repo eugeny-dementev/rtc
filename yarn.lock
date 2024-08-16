@@ -1323,6 +1323,11 @@ webpack@^5.93.0:
     watchpack "^2.4.1"
     webpack-sources "^3.2.3"
 
+webrtc-issue-detector@^1.12.0:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/webrtc-issue-detector/-/webrtc-issue-detector-1.12.0.tgz#fb4f11bb58df96e6149df36e8ab0a5b3a81aa854"
+  integrity sha512-RHg9WOAePV75ItWUduzA/kZ764PJB/N0wXA3Vp/EQNl2hQWHL8S1uHL7qPBHGzVvxQGWZlxZK0DF7rp3U/tR1g==
+
 which@^2.0.1:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/which/-/which-2.0.2.tgz#7c6a8dd0a636a0327e10b59c9286eee93f3f51b1"
