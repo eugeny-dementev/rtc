@@ -42,6 +42,10 @@ receiveAudioButton.onclick = () => {
 */
 const remotes = {};
 
+window.rtc = {
+  remotes,
+};
+
 let localStream;
 
 let issuesDetector = null;
@@ -57,7 +61,7 @@ if (shouldDetect) {
     onNetworkScoresUpdated: (scores) => {
       console.log('WID: Inbound network score', scores.inbound); // eg. 3.7
       console.log('WID: Outbound network score', scores.outbound); // eg. 4.5
-      console.log('WID: Network stats', scores.statsSamples); // eg. { inboundStatsSample: { avgJitter: 0.1, rtt: 30, packetsLoss: 8 }, ... }
+      console.log('Network stats', scores.statsSamples); // eg. { inboundStatsSample: { avgJitter: 0.1, rtt: 30, packetsLoss: 8 }, ... }
     }
   });
 
@@ -259,14 +263,14 @@ function addRemoteVideo(from) {
 navigator
   .mediaDevices
   .getUserMedia({
-    audio: false,
+    audio: true,
     video: true
   })
   .then(handleSuccess)
   .catch(handleError)
 
-function handleSuccess(stream) {
-  console.log('handleSuccess', 'Adding local stream', stream);
+function handleSuccess(stream, ...args) {
+  console.log('handleSuccess', 'Adding local stream', stream, args);
 
   localVideo.srcObject = stream;
   localStream = stream;
