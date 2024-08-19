@@ -13,18 +13,22 @@ const pcConfig = {
   }],
 };
 
-const showIp = document.getElementById('showIP');
+const receiveAudioButton = document.getElementById('receive');
+const sendAudioButton = document.getElementById('send');
+const muteAudioButton = document.getElementById('mute');
 
 const localVideo = document.getElementById('localVideo');
 
 const streamsContainer = document.getElementById('streams');
 
-showIp.onclick = () => {
-  fetch('/ip').then((response) => {
-    response.text().then((text) => {
-      console.log('ip response:', JSON.parse(text));
-    })
-  }).catch(console.error);
+sendAudioButton.onclick = () => {
+  console.log('send audio clicked');
+};
+muteAudioButton.onclick = () => {
+  console.log('mute audio clicked');
+};
+receiveAudioButton.onclick = () => {
+  console.log('receive audio clicked');
 };
 
 /*
