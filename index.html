@@ -9,11 +9,13 @@
 <body>
   <h1>RTCPeerConnection Example</h1>
   <div>
-    <button id="showIP">IP</button>
+    <button id="receive">receive audio</button>
+    <button id="send">send audio</button>
   </div>
 
   <div id="streams">
     <video id="localVideo" autoplay muted></video>
+    <video id="localAudio" muted></video>
   </div>
 
   <script src="./dist/bundle.js"></script>
