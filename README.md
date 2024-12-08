@@ -5,6 +5,7 @@ video conference demo
 # Usage
 
 - `npm install` or `yarn`
+- `yarn build` to build browser `dist/bundle.js`
 - `node server.js`
   - tested in Node.js@20
 - Open http://localhost:3000/index.html?room=default
@@ -32,3 +33,8 @@ video conference demo
 - No coordinator or main host
   - Each new client notifies everyone about
   - Each old client sends offer to the new one
+
+## WebRTCIssueDetector
+- To activate issue detector need to pass GET parameter `detect=true`
+- For testing make sense to pass it only to first page only
+  - `localhost:3000/?room=someroom&detect=true`

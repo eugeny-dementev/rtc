@@ -4,24 +4,31 @@
  * Open index.html?room=<room_name>
  */
 
+const WebRTCIssueDetectorModule = require('webrtc-issue-detector');
+const WebRTCIssueDetector = WebRTCIssueDetectorModule.default
+
 const pcConfig = {
   iceServer: [{
     urls: 'stun:stun.l.google.com:19302',
   }],
 };
 
-const showIp = document.getElementById('showIP');
+const receiveAudioButton = document.getElementById('receive');
+const sendAudioButton = document.getElementById('send');
+const muteAudioButton = document.getElementById('mute');
 
 const localVideo = document.getElementById('localVideo');
 
 const streamsContainer = document.getElementById('streams');
 
-showIp.onclick = () => {
-  fetch('/ip').then((response) => {
-    response.text().then((text) => {
-      console.log('ip response:', JSON.parse(text));
-    })
-  }).catch(console.error);
+sendAudioButton.onclick = () => {
+  console.log('send audio clicked');
+};
+muteAudioButton.onclick = () => {
+  console.log('mute audio clicked');
+};
+receiveAudioButton.onclick = () => {
+  console.log('receive audio clicked');
 };
 
 /*
@@ -35,9 +42,32 @@ showIp.onclick = () => {
 */
 const remotes = {};
 
+window.rtc = {
+  remotes,
+};
+
 let localStream;
 
+let issuesDetector = null;
 const room = getRoomName();
+const shouldDetect = getShouldEnableIssuesDetector();
+if (shouldDetect) {
+  issuesDetector = new WebRTCIssueDetector({
+    onIssues: (issues) => issues.map((issue) => {
+      console.log('WID: Issues type:', issue.type); // eg. "network"
+      console.log('WID: Issues reason:', issue.reason); // eg. "outbound-network-throughput"
+      console.log('WID: Stats:', issue.statsSample); // eg. "packetLossPct: 12%, avgJitter: 230, rtt: 150"
+    }),
+    onNetworkScoresUpdated: (scores) => {
+      console.log('WID: Inbound network score', scores.inbound); // eg. 3.7
+      console.log('WID: Outbound network score', scores.outbound); // eg. 4.5
+      console.log('Network stats', scores.statsSamples); // eg. { inboundStatsSample: { avgJitter: 0.1, rtt: 30, packetsLoss: 8 }, ... }
+    }
+  });
+
+  // start collecting getStats() and detecting issues
+  issuesDetector.watchNewPeerConnections();
+}
 const socket = io.connect();
 
 setTimeout(() => {
@@ -233,14 +263,14 @@ function addRemoteVideo(from) {
 navigator
   .mediaDevices
   .getUserMedia({
-    audio: false,
+    audio: true,
     video: true
   })
   .then(handleSuccess)
   .catch(handleError)
 
-function handleSuccess(stream) {
-  console.log('handleSuccess', 'Adding local stream', stream);
+function handleSuccess(stream, ...args) {
+  console.log('handleSuccess', 'Adding local stream', stream, args);
 
   localVideo.srcObject = stream;
   localStream = stream;
@@ -290,4 +320,13 @@ function getRoomName() {
   if (!name) throw new Error('Room name is not specified: ?room=name');
 
   return name;
+}
+
+function getShouldEnableIssuesDetector() {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+
+  const shouldDetectIssues = urlParams.get('detect')
+
+  return Boolean(shouldDetectIssues);
 }
